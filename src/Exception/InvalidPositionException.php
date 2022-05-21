@@ -6,6 +6,7 @@ use RuntimeException;
 
 class InvalidPositionException extends RuntimeException
 {
-    public const ALREADY_HERE = 1;
+    public const INVALID = 1;
     public const POTHOLE = 2;
+    public const ALREADY_HERE = 3;
 }

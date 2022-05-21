@@ -103,6 +103,13 @@ final class RobotAction
             );
         }
 
+        if ($this->table->isInside($finalPosition) === false) {
+            throw new InvalidPositionException(
+                'The place you wish to go is beyond the barrier.',
+                InvalidPositionException::INVALID
+            );
+        }
+
         if ($this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition)) {
             throw new InvalidPositionException(
                 'You are already on your final destination.',

@@ -211,6 +211,15 @@ final class RobotActionTest extends TestCase
         $robot->path(2, 4);
     }
 
+    public function test_path_beyond_barrier(): void
+    {
+        $this->expectException(InvalidPositionException::class);
+        $this->expectExceptionCode(InvalidPositionException::INVALID);
+
+        $robot = new RobotAction(0, 0, RobotAction::SOUTH);
+        $robot->path(5, 0);
+    }
+
     /**
      * @dataProvider potholesProvider
      */
