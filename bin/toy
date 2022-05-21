@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+use App\Command\ToyCommand;
+use Symfony\Component\Console\Application;
+
+$app = new Application();
+
+$toy = new ToyCommand();
+$app->add($toy);
+$app->setDefaultCommand($toy->getName(), true);
+
+$app->run();

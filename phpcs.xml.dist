@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+  <arg name="colors" />
+  <arg name="parallel" value="8" />
+  <arg value="psv" />
+  <arg name="extensions" value="php" />
+
+  <file>bin</file>
+  <file>config</file>
+  <file>public</file>
+  <file>src</file>
+  <file>tests</file>
+
+  <exclude-pattern>vendor</exclude-pattern>
+
+  <rule ref="ptscs" />
+
+  <rule ref="Squiz.Arrays.ArrayDeclaration">
+    <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed" />
+  </rule>
+
+  <rule ref="PSR12.Files.FileHeader.IncorrectOrder">
+    <exclude-pattern>api/index.php</exclude-pattern>
+  </rule>
+
+  <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+    <exclude-pattern>tests</exclude-pattern>
+  </rule>
+
+  <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+    <exclude-pattern>tests</exclude-pattern>
+  </rule>
+
+  <rule ref="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue">
+    <exclude-pattern>public</exclude-pattern>
+    <exclude-pattern>config</exclude-pattern>
+    <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+  </rule>
+
+  <rule ref="Generic.Files.LineLength.TooLong">
+    <exclude-pattern>public</exclude-pattern>
+    <exclude-pattern>config</exclude-pattern>
+  </rule>
+
+  <rule ref="Squiz.Operators.ComparisonOperatorUsage.NotAllowed">
+    <exclude-pattern>config</exclude-pattern>
+  </rule>
+
+</ruleset>

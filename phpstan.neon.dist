@@ -1,0 +1,20 @@
+parameters:
+    level: max
+    paths:
+        - bin
+        - public
+        - src
+        - tests
+
+    excludePaths:
+        - tests/bootstrap.php
+
+    scanDirectories:
+        - vendor/bin/.phpunit
+
+    ignoreErrors:
+
+
+    # Miscellaneous parameters
+    inferPrivatePropertyTypeFromConstructor: true
+    checkGenericClassInNonGenericObjectType: false
