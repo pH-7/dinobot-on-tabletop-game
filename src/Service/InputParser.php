@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -7,18 +8,26 @@ use InvalidArgumentException;
 
 final class InputParser
 {
+    private const PLACE_PATTERN = '/^place\s+(\d+)\s*,\s*(\d+)\s*,\s*([a-zA-Z]+)$/';
+    private const PATH_PATTERN = '/^path\s+(\d+)\s*,\s*(\d+)\s*$/';
 
     public function parse(string $input): InputDto
     {
         $input = strtolower(trim($input));
 
-        $pattern = '/^place\s+(\d+)\s*,\s*(\d+)\s*,\s*([a-zA-Z]+)$/';
-        if (preg_match($pattern, $input, $matches) === 1) {
-            $xPos = (int) $matches[1];
-            $yPos = (int) $matches[2];
+        if (preg_match(self::PLACE_PATTERN, $input, $matches) === 1) {
+            $xPos = (int)$matches[1];
+            $yPos = (int)$matches[2];
             $face = $matches[3];
 
             return new InputDto('place', $xPos, $yPos, $face);
+        }
+
+        if (preg_match(self::PATH_PATTERN, $input, $matches) === 1) {
+            $xPos = (int)$matches[1];
+            $yPos = (int)$matches[2];
+
+            return new InputDto('path', $xPos, $yPos, null);
         }
 
         switch ($input) {

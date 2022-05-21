@@ -1,10 +1,34 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
+use App\Exception\InvalidPositionException;
 use App\Service\RobotAction;
 use PHPUnit\Framework\TestCase;
 
 final class RobotActionTest extends TestCase
 {
+    /**
+     * @dataProvider potholesProvider
+     */
+    public function test_invalid_potholes(int $x, int $y): void
+    {
+        $this->expectException(InvalidPositionException::class);
+        $this->expectExceptionCode(InvalidPositionException::POTHOLE);
+        $this->expectExceptionMessage('There is a pothole here');
+
+        new RobotAction($x, $y, RobotAction::NORTH);
+    }
+
+    /**
+     * @return array<int>[]
+     */
+    public function potholesProvider(): array
+    {
+        return [
+            [2, 3],
+            [2, 1]
+        ];
+    }
 
     public function test_invalid_face(): void
     {
@@ -38,11 +62,11 @@ final class RobotActionTest extends TestCase
     public function moveData(): array
     {
         return [
-                [0, 0, 'north', '0,1,north'],
-                [0, 0, 'east', '1,0,east'],
-                [1, 1, 'south', '1,0,south'],
-                [1, 1, 'west', '0,1,west'],
-               ];
+            [0, 0, 'north', '0,1,north'],
+            [0, 0, 'east', '1,0,east'],
+            [1, 1, 'south', '1,0,south'],
+            [1, 1, 'west', '0,1,west'],
+        ];
     }
 
     /**
@@ -62,11 +86,11 @@ final class RobotActionTest extends TestCase
     public function leftData(): array
     {
         return [
-                [0, 0, 'north', '0,0,west'],
-                [0, 0, 'east', '0,0,north'],
-                [0, 0, 'south', '0,0,east'],
-                [0, 0, 'west', '0,0,south'],
-               ];
+            [0, 0, 'north', '0,0,west'],
+            [0, 0, 'east', '0,0,north'],
+            [0, 0, 'south', '0,0,east'],
+            [0, 0, 'west', '0,0,south'],
+        ];
     }
 
     /**
@@ -86,11 +110,11 @@ final class RobotActionTest extends TestCase
     public function rightData(): array
     {
         return [
-                [0, 0, 'north', '0,0,east'],
-                [0, 0, 'east', '0,0,south'],
-                [0, 0, 'south', '0,0,west'],
-                [0, 0, 'west', '0,0,north'],
-               ];
+            [0, 0, 'north', '0,0,east'],
+            [0, 0, 'east', '0,0,south'],
+            [0, 0, 'south', '0,0,west'],
+            [0, 0, 'west', '0,0,north'],
+        ];
     }
 
     public function test_complex_move(): void
@@ -122,11 +146,35 @@ final class RobotActionTest extends TestCase
     public function moveOutside(): array
     {
         return [
-                [0, 0, 'west'],
-                [0, 0, 'south'],
-                [4, 0, 'east'],
-                [0, 4, 'north'],
-               ];
+            [0, 0, 'west'],
+            [0, 0, 'south'],
+            [4, 0, 'east'],
+            [0, 4, 'north'],
+        ];
+    }
+
+    /**
+     * @dataProvider moveToPotholesProvider
+     */
+    public function test_move_to_potholes(int $x, int $y, string $face): void
+    {
+        $this->expectException(InvalidPositionException::class);
+        $this->expectExceptionCode(InvalidPositionException::POTHOLE);
+
+        $robot = new RobotAction($x, $y, $face);
+        $robot->move();
+    }
+
+    /**
+     * @return array<int|string>[]
+     */
+    public function moveToPotholesProvider(): array
+    {
+        return [
+            [2, 2, 'north'],
+            [2, 0, 'north'],
+            [1, 3, 'east'],
+        ];
     }
 
     /**
@@ -146,10 +194,56 @@ final class RobotActionTest extends TestCase
     public function placeOutside(): array
     {
         return [
-                [-1, 0, 'north'],
-                [0, -1, 'north'],
-                [5, 0, 'north'],
-                [0, 5, 'north'],
-               ];
+            [-1, 0, 'north'],
+            [0, -1, 'north'],
+            [5, 0, 'north'],
+            [0, 5, 'north'],
+        ];
+    }
+
+    public function test_path_on_final_destination(): void
+    {
+        $this->expectException(InvalidPositionException::class);
+        $this->expectExceptionCode(InvalidPositionException::ALREADY_HERE);
+
+        $robot = new RobotAction(2, 4, RobotAction::SOUTH);
+        $robot->path(2, 4);
+    }
+
+    /**
+     * @dataProvider potholesProvider
+     */
+    public function test_path_on_pothole(int $x, int $y): void
+    {
+        $this->expectException(InvalidPositionException::class);
+        $this->expectExceptionCode(InvalidPositionException::POTHOLE);
+
+        $robot = new RobotAction(0, 0, RobotAction::SOUTH);
+        $robot->path($x, $y);
+    }
+
+    /**
+     * @dataProvider pathsProvider
+     */
+    public function test_path(int $x, int $y, string $pathResult): void
+    {
+        $robot = new RobotAction(0, 0, RobotAction::EAST);
+
+        $actual = $robot->path($x, $y);
+
+        $this->assertSame($pathResult, $actual);
+    }
+
+    /**
+     * @return array<int|string>[]
+     */
+    public function pathsProvider(): array
+    {
+        return [
+            [0, 1, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left, move, move, move'],
+            [0, 3, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left, move'],
+            [2, 4, 'move, move, move, move, move left, move, move, move, move left, move, move'],
+            [4, 2, 'move, move, move, move, move left, move, move']
+        ];
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Data\Vector;
 use App\Service\Tabletop;
@@ -29,4 +31,29 @@ final class TabletopTest extends TestCase
         $this->assertFalse($table->isInside(new Vector(5, 0)));
         $this->assertFalse($table->isInside(new Vector(0, 5)));
     }
+
+    /**
+     * @dataProvider potholesProvider
+     */
+    public function test_correct_potholes(int $x, int $y): void
+    {
+        $table = new Tabletop();
+        $move = new Vector($x, $y);
+
+        $actual = $table->hasPotHole($move);
+
+        $this->assertTrue($actual);
+    }
+
+    /**
+     * @return array<int>[]
+     */
+    public function potholesProvider(): array
+    {
+        return [
+            [2, 3],
+            [2, 1]
+        ];
+    }
+
 }

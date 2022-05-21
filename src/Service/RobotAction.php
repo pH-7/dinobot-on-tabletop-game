@@ -1,18 +1,28 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service;
 
 use App\Data\Vector;
 use App\Entity\Robot;
+use App\Exception\InvalidPositionException;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
 final class RobotAction
 {
     public const NORTH = 'north';
-    public const EAST  = 'east';
+    public const EAST = 'east';
     public const SOUTH = 'south';
-    public const WEST  = 'west';
+    public const WEST = 'west';
+
+    public const DIRECTIONS = [
+        self::NORTH,
+        self::EAST,
+        self::SOUTH,
+        self::WEST
+    ];
 
     /**
      * @var Robot
@@ -38,6 +48,11 @@ final class RobotAction
         $this->table = new Tabletop();
 
         $pos = new Vector($xpos, $ypos);
+
+        if ($this->table->hasPotHole($pos)) {
+            throw new InvalidPositionException('There is a pothole here', InvalidPositionException::POTHOLE);
+        }
+
         if ($this->table->isInside($pos) === false) {
             throw new InvalidArgumentException('Invalid place position');
         }
@@ -53,8 +68,113 @@ final class RobotAction
 
     public function move(): void
     {
+        $move = $this->getMoveVector($this->robot->face());
+
+        $newPos = $move->add($this->robot->position());
+
+        if ($this->table->hasPotHole($newPos)) {
+            throw new InvalidPositionException('There is a pothole here', InvalidPositionException::POTHOLE);
+        }
+
+        if ($this->table->isInside($newPos) === false) {
+            throw new UnexpectedValueException('Cannot move beyond the barrier');
+        }
+
+        $this->robot->update($newPos, $this->robot->face());
+    }
+
+    public function left(): void
+    {
+        $currentFace = $this->robot->face();
+        $this->robot->update($this->robot->position(), $this->getFaceLeft($currentFace));
+    }
+
+    public function right(): void
+    {
+        $currentFace = $this->robot->face();
+        $this->robot->update($this->robot->position(), $this->getFaceRight($currentFace));
+    }
+
+    public function path(int $x, int $y): string
+    {
+        $messages = [];
+        $finalPosition = new Vector($x, $y);
+        $currentPosition = $this->robot->position();
+        $currentFace = $this->robot->face();
+        $pathRobot = new Robot($currentPosition, $currentFace);
+
+        if ($this->table->hasPotHole($finalPosition)) {
+            throw new InvalidPositionException(
+                'The place you wish to go has a pothole.',
+                InvalidPositionException::POTHOLE
+            );
+        }
+
+        if ($this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition)) {
+            throw new InvalidPositionException(
+                'You are already on your final destination.',
+                InvalidPositionException::ALREADY_HERE
+            );
+        }
+
+        do {
+            $hasArrived = $this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition);
+
+            if ($this->execute($pathRobot, $finalPosition)) {
+                $messages[] = 'move';
+                continue;
+            }
+
+            $newFace = $this->getFaceLeft($pathRobot->face());
+            $pathRobot->update($pathRobot->position(), $newFace);
+            if ($this->execute($pathRobot, $finalPosition)) {
+                $messages[] = 'move left';
+                continue;
+            }
+
+            $newFace = $this->getFaceRight($pathRobot->face());
+            $pathRobot->update($pathRobot->position(), $newFace);
+            if ($this->execute($pathRobot, $finalPosition)) {
+                $messages[] = 'move right';
+            }
+        } while (!$hasArrived);
+
+        return implode(', ', $messages);
+    }
+
+    private function execute(Robot $robot, Vector $finalPosition): bool
+    {
+        $move = $this->getMoveVector($robot->face());
+        $newTmpPosition = $move->add($robot->position());
+
+        $canGo = $this->canGo($newTmpPosition, $finalPosition);
+
+        if ($canGo) {
+            $robot->update($newTmpPosition, $robot->face());
+        }
+
+        return $canGo;
+    }
+
+    private function canGo(Vector $current, Vector $destination): bool
+    {
+        return $this->isValid($current);
+    }
+
+    private function isValid(Vector $position): bool
+    {
+        return $this->table->isInside($position) && !$this->table->hasPotHole($position);
+    }
+
+    private function hasArrivedToFinalPosition(Vector $current, Vector $destination): bool
+    {
+        return $current->xpos() === $destination->xpos() && $current->ypos() === $destination->ypos();
+    }
+
+    private function getMoveVector(string $face): Vector
+    {
         $move = new Vector(0, 0);
-        switch ($this->robot->face()) {
+        switch ($face) {
             case self::NORTH:
                 $move = new Vector(0, 1);
                 break;
@@ -69,53 +189,48 @@ final class RobotAction
                 break;
         }
 
-        $newPos = $move->add($this->robot->position());
-        if ($this->table->isInside($newPos) === false) {
-            throw new UnexpectedValueException('Cannot move beyond the barrier');
-        }
-
-        $this->robot->update($newPos, $this->robot->face());
+        return $move;
     }
 
-    public function left(): void
+    private function getFaceLeft(string $currentFace): string
     {
-        $face = '';
-        switch ($this->robot->face()) {
+        $newFace = '';
+        switch ($currentFace) {
             case self::NORTH:
-                $face = self::WEST;
+                $newFace = self::WEST;
                 break;
             case self::EAST:
-                $face = self::NORTH;
+                $newFace = self::NORTH;
                 break;
             case self::SOUTH:
-                $face = self::EAST;
+                $newFace = self::EAST;
                 break;
             case self::WEST:
-                $face = self::SOUTH;
+                $newFace = self::SOUTH;
                 break;
         }
 
-        $this->robot->update($this->robot->position(), $face);
+        return $newFace;
     }
 
-    public function right(): void
+    private function getFaceRight(string $currentFace): string
     {
-        $face = '';
-        switch ($this->robot->face()) {
+        $newFace = '';
+        switch ($currentFace) {
             case self::NORTH:
-                $face = self::EAST;
+                $newFace = self::EAST;
                 break;
             case self::EAST:
-                $face = self::SOUTH;
+                $newFace = self::SOUTH;
                 break;
             case self::SOUTH:
-                $face = self::WEST;
+                $newFace = self::WEST;
                 break;
             case self::WEST:
-                $face = self::NORTH;
+                $newFace = self::NORTH;
                 break;
         }
 
-        $this->robot->update($this->robot->position(), $face);
+        return $newFace;
     }
 }

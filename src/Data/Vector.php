@@ -34,4 +34,5 @@ final class Vector
 
         return $new;
     }
+
 }

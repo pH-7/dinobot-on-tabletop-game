@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Command;
 
 use App\Data\InputDto;
+use App\Exception\InvalidPositionException;
 use App\Service\InputParser;
 use App\Service\RobotAction;
 use InvalidArgumentException;
@@ -11,7 +14,6 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use UnexpectedValueException;
 
 class ToyCommand extends Command
 {
@@ -39,23 +41,18 @@ class ToyCommand extends Command
          * @var QuestionHelper $helper
          */
         $helper = $this->getHelper('question');
-        $q      = new Question('> ', '');
+        $q = new Question('> ', '');
         $parser = new InputParser();
 
         do {
             try {
                 $command = $helper->ask($input, $output, $q);
-                $dto     = $parser->parse($command);
+                $dto = $parser->parse($command);
                 $this->process($output, $dto);
-
-                //
-            } catch (InvalidArgumentException $exc) {
-                $output->writeln($exc->getMessage());
-            } catch (UnexpectedValueException $exc) {
+            } catch (InvalidArgumentException|InvalidPositionException $exc) {
                 $output->writeln($exc->getMessage());
             }
         } while ($command !== 'q');
-
 
         return 0;
     }
@@ -86,6 +83,10 @@ class ToyCommand extends Command
                 break;
             case 'right':
                 $this->robot->right();
+                break;
+            case 'path':
+                $path = $this->robot->path($dto->xPos(), $dto->yPos());
+                $output->writeln($path);
                 break;
         }
     }

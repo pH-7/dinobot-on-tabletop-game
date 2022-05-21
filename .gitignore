@@ -1,5 +1,7 @@
 .idea
+.phpunit.result.cache
 public/profiles_sitemap.xml
+.DS_Store
 ###> symfony/framework-bundle ###
 /.env
 /.env.localbuild
@@ -27,4 +29,3 @@ public/profiles_sitemap.xml
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-pack ###
-
