@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -28,9 +29,9 @@ final class Tabletop
     }
 
 
-
     public function hasPotHole(Vector $pos): bool
     {
-        return in_array($pos->xpos(), self::POTHOLES_X) && in_array($pos->ypos(), self::POTHOLES_Y);
+        return in_array($pos->xpos(), self::POTHOLES_X) &&
+            in_array($pos->ypos(), self::POTHOLES_Y);
     }
 }
