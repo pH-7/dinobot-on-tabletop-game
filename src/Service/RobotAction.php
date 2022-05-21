@@ -120,15 +120,17 @@ final class RobotAction
         do {
             $hasArrived = $this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition);
 
-            if ($this->execute($pathRobot, $finalPosition)) {
+            if ($this->execute($pathRobot, $finalPosition) && !$hasArrived) {
                 $messages[] = 'move';
                 continue;
             }
 
-            $newFace = $this->getFaceLeft($pathRobot->face());
-            $pathRobot->update($pathRobot->position(), $newFace);
-            if ($this->execute($pathRobot, $finalPosition)) {
-                $messages[] = 'left move';
+            if (!$hasArrived) {
+                $newFace = $this->getFaceLeft($pathRobot->face());
+                $pathRobot->update($pathRobot->position(), $newFace);
+                if ($this->execute($pathRobot, $finalPosition)) {
+                    $messages[] = 'left move';
+                }
             }
         } while (!$hasArrived);
 
@@ -140,8 +142,7 @@ final class RobotAction
         $move = $this->getMoveVector($robot->face());
         $newTmpPosition = $move->add($robot->position());
 
-        $canGo = $this->isValid($newTmpPosition) &&
-            !$this->hasArrivedToFinalPosition($robot->position(), $destination);
+        $canGo = $this->isValid($newTmpPosition);
 
         if ($canGo) {
             $robot->update($newTmpPosition, $robot->face());
