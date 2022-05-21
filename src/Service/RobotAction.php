@@ -123,14 +123,21 @@ final class RobotAction
             $newFace = $this->getFaceLeft($pathRobot->face());
             $pathRobot->update($pathRobot->position(), $newFace);
             if ($this->execute($pathRobot, $finalPosition)) {
-                $messages[] = 'move left';
+                $messages[] = 'left move';
                 continue;
             }
 
             $newFace = $this->getFaceRight($pathRobot->face());
             $pathRobot->update($pathRobot->position(), $newFace);
             if ($this->execute($pathRobot, $finalPosition)) {
-                $messages[] = 'move right';
+                $messages[] = 'right move';
+                continue;
+            }
+
+            $newFace = $this->getFaceLeft($pathRobot->face());
+            $pathRobot->update($pathRobot->position(), $newFace);
+            if ($this->execute($pathRobot, $finalPosition)) {
+                $messages[] = 'left move';
             }
         } while (!$hasArrived);
 

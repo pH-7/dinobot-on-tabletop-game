@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use App\Exception\InvalidPositionException;
@@ -225,9 +226,9 @@ final class RobotActionTest extends TestCase
     /**
      * @dataProvider pathsProvider
      */
-    public function test_path(int $x, int $y, string $pathResult): void
+    public function test_path(int $x, int $y, string $face, string $pathResult): void
     {
-        $robot = new RobotAction(0, 0, RobotAction::EAST);
+        $robot = new RobotAction(0, 0, $face);
 
         $actual = $robot->path($x, $y);
 
@@ -240,10 +241,20 @@ final class RobotActionTest extends TestCase
     public function pathsProvider(): array
     {
         return [
-            [0, 1, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left, move, move'],
-            [0, 3, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left'],
-            [2, 4, 'move, move, move, move, move left, move, move, move, move left, move'],
-            [4, 2, 'move, move, move, move, move left, move']
+            [3, 0, RobotAction::EAST, 'move, move, move'],
+            [4, 4, RobotAction::WEST, 'left move, move, move, move, left move, move, move, move'],
+            [
+                2,
+                0,
+                RobotAction::NORTH,
+                'move, move, move, move, left move, move, move, move, left move, move'
+            ],
+            [
+                4,
+                3,
+                RobotAction::SOUTH,
+                'left move, move, move, move, left move, move, move'
+            ],
         ];
     }
 }
