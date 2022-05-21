@@ -240,10 +240,10 @@ final class RobotActionTest extends TestCase
     public function pathsProvider(): array
     {
         return [
-            [0, 1, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left, move, move, move'],
-            [0, 3, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left, move'],
-            [2, 4, 'move, move, move, move, move left, move, move, move, move left, move, move'],
-            [4, 2, 'move, move, move, move, move left, move, move']
+            [0, 1, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left, move, move'],
+            [0, 3, 'move, move, move, move, move left, move, move, move, move left, move, move, move, move left'],
+            [2, 4, 'move, move, move, move, move left, move, move, move, move left, move'],
+            [4, 2, 'move, move, move, move, move left, move']
         ];
     }
 }

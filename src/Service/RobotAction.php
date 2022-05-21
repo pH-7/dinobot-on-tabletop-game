@@ -17,13 +17,6 @@ final class RobotAction
     public const SOUTH = 'south';
     public const WEST = 'west';
 
-    public const DIRECTIONS = [
-        self::NORTH,
-        self::EAST,
-        self::SOUTH,
-        self::WEST
-    ];
-
     /**
      * @var Robot
      */
@@ -118,7 +111,9 @@ final class RobotAction
         }
 
         do {
-            $hasArrived = $this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition);
+            if ($hasArrived = $this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition)) {
+                break;
+            }
 
             if ($this->execute($pathRobot, $finalPosition)) {
                 $messages[] = 'move';
@@ -147,18 +142,13 @@ final class RobotAction
         $move = $this->getMoveVector($robot->face());
         $newTmpPosition = $move->add($robot->position());
 
-        $canGo = $this->canGo($newTmpPosition, $finalPosition);
+        $canGo = $this->isValid($newTmpPosition, $finalPosition);
 
         if ($canGo) {
             $robot->update($newTmpPosition, $robot->face());
         }
 
         return $canGo;
-    }
-
-    private function canGo(Vector $current, Vector $destination): bool
-    {
-        return $this->isValid($current);
     }
 
     private function isValid(Vector $position): bool

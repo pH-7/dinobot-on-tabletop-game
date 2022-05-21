@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
+@set_time_limit(0);
+@ini_set('memory_limit', '528M');
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use App\Command\ToyCommand;
