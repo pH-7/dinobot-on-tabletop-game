@@ -124,16 +124,23 @@ final class RobotAction
         do {
             $hasArrived = $this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition);
 
-            if ($this->execute($pathRobot, $finalPosition) && !$hasArrived) {
+            if ($this->execute($pathRobot, $pathRobot->face()) && !$hasArrived) {
                 $messages[] = 'move';
                 continue;
             }
 
             if (!$hasArrived) {
                 $newFace = $this->getLeftFace($pathRobot->face());
-                $pathRobot->update($pathRobot->position(), $newFace);
-                if ($this->execute($pathRobot, $finalPosition)) {
+                if ($this->execute($pathRobot, $newFace)) {
                     $messages[] = 'left move';
+                    continue;
+                }
+            }
+
+            if (!$hasArrived) {
+                $newFace = $this->getRightFace($pathRobot->face());
+                if ($this->execute($pathRobot, $newFace)) {
+                    $messages[] = 'right move';
                 }
             }
         } while (!$hasArrived);
@@ -141,15 +148,20 @@ final class RobotAction
         return implode(', ', $messages);
     }
 
-    private function execute(Robot $robot, Vector $destination): bool
+    /**
+     * Execute the new path seeker and updates the robot's details if it's a valid path.
+     *
+     * @return bool TRUE if the path was valid and got saved, FALSE otherwise.
+     */
+    private function execute(Robot $robot, string $face): bool
     {
-        $move = $this->getMoveVector($robot->face());
+        $move = $this->getMoveVector($face);
         $newTmpPosition = $move->add($robot->position());
 
         $canGo = $this->isValid($newTmpPosition);
 
         if ($canGo) {
-            $robot->update($newTmpPosition, $robot->face());
+            $robot->update($newTmpPosition, $face);
         }
 
         return $canGo;

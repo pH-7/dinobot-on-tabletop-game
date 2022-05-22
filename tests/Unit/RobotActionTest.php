@@ -251,12 +251,12 @@ final class RobotActionTest extends TestCase
     {
         return [
             [3, 0, RobotAction::EAST, 'move, move, move'],
-            [4, 4, RobotAction::WEST, 'left move, move, move, move, left move, move, move, move'],
+            [4, 4, RobotAction::WEST, 'right move, move, move, move, right move, move, move, move'],
             [
                 2,
                 0,
                 RobotAction::NORTH,
-                'move, move, move, move, left move, move, move, move, left move, move'
+                'move, move, move, move, right move, move, move, move, right move, move, move, move, right move, move'
             ],
             [
                 4,
