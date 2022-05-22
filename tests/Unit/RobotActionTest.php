@@ -235,12 +235,30 @@ final class RobotActionTest extends TestCase
     /**
      * @dataProvider pathsProvider
      */
-    public function test_path(int $x, int $y, string $face, string $pathResult): void
+    public function test_path_from_first_tile(int $x, int $y, string $face, string $pathResult): void
     {
         $robot = new RobotAction(0, 0, $face);
 
+        // Assert what the pathfinder gives back
         $actual = $robot->path($x, $y);
+        $this->assertSame($pathResult, $actual);
+    }
 
+    /**
+     * @dataProvider initialPositionsAndPathsProvider
+     */
+    public function test_path_from_other_tile(
+        int $initialX,
+        $initialY,
+        int $newX,
+        int $newY,
+        string $face,
+        string $pathResult
+    ): void {
+        $robot = new RobotAction($initialX, $initialY, $face);
+
+        // Assert what the pathfinder gives back
+        $actual = $robot->path($newX, $newY);
         $this->assertSame($pathResult, $actual);
     }
 
@@ -250,19 +268,67 @@ final class RobotActionTest extends TestCase
     public function pathsProvider(): array
     {
         return [
+            // Facing East
             [3, 0, RobotAction::EAST, 'move, move, move'],
+
+            // Facing West
             [4, 4, RobotAction::WEST, 'right move, move, move, move, right move, move, move, move'],
+
+            // Facing North
             [
                 2,
                 0,
                 RobotAction::NORTH,
                 'move, move, move, move, right move, move, move, move, right move, move, move, move, right move, move'
             ],
+
+            // Facing South
             [
                 4,
                 3,
                 RobotAction::SOUTH,
                 'left move, move, move, move, left move, move, move'
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int|string>[]
+     */
+    public function initialPositionsAndPathsProvider(): array
+    {
+        return [
+            // Facing East
+            [
+                1,
+                2,
+                2,
+                4,
+                RobotAction::EAST,
+                'move, move, move, left move, move, left move, move'
+            ],
+
+            // Facing West
+            [4, 4, 2, 4, RobotAction::WEST, 'move, move'],
+
+            // Facing North
+            [
+                4,
+                2,
+                1,
+                4,
+                RobotAction::NORTH,
+                'move, move, left move, move, move'
+            ],
+
+            // Facing South
+            [
+                1,
+                2,
+                2,
+                4,
+                RobotAction::SOUTH,
+                'move, move, left move, move, move, left move, move, move, move, left move, move'
             ],
         ];
     }
