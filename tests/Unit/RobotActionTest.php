@@ -269,17 +269,22 @@ final class RobotActionTest extends TestCase
     {
         return [
             // Facing East
-            [3, 0, RobotAction::EAST, 'move, move, move'],
+            [
+                3,
+                0,
+                RobotAction::EAST,
+                'move, move left, move, move left, move right, move, move right, move, move, move right, move, move left, move right, move, move right'
+            ],
 
             // Facing West
-            [4, 4, RobotAction::WEST, 'right move, move, move, move, right move, move, move, move'],
+            [4, 4, RobotAction::WEST, 'move right, move, move right, move, move, move left, move right, move left'],
 
             // Facing North
             [
                 2,
                 0,
                 RobotAction::NORTH,
-                'move, move, move, move, right move, move, move, move, right move, move, move, move, right move, move'
+                'move right, move'
             ],
 
             // Facing South
@@ -287,7 +292,7 @@ final class RobotActionTest extends TestCase
                 4,
                 3,
                 RobotAction::SOUTH,
-                'left move, move, move, move, left move, move, move'
+                'move left, move, move, move left, move right, move left, move'
             ],
         ];
     }
@@ -305,11 +310,18 @@ final class RobotActionTest extends TestCase
                 2,
                 4,
                 RobotAction::EAST,
-                'move, left move, move, left move, move'
+                'move left, move right, move left, move left, move'
             ],
 
             // Facing West
-            [4, 4, 2, 4, RobotAction::WEST, 'move, move'],
+            [
+                4,
+                4,
+                2,
+                4,
+                RobotAction::WEST,
+                'move left, move right, move left, move right, move, move left, move right, move left, move left, move, move, move left, move right, move left, move, move left, move right, move left'
+            ],
 
             // Facing North
             [
@@ -318,7 +330,7 @@ final class RobotActionTest extends TestCase
                 1,
                 4,
                 RobotAction::NORTH,
-                'move, move, left move, move, move'
+                'move, move left, move right, move left, move'
             ],
 
             // Facing South
@@ -328,7 +340,7 @@ final class RobotActionTest extends TestCase
                 2,
                 4,
                 RobotAction::SOUTH,
-                'move, move, left move, move, move, left move, move, move, move, left move, move'
+                'move left, move, move left, move right, move left, move left, move'
             ],
         ];
     }

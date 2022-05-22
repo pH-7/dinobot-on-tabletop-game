@@ -17,6 +17,8 @@ final class RobotAction
     public const SOUTH = 'south';
     public const WEST = 'west';
 
+    private const DIRECTIONS = ['left', 'right', 'move'];
+
     /**
      * @var Robot
      */
@@ -121,25 +123,14 @@ final class RobotAction
             );
         }
 
-        while (true) {
-            if ($this->hasArrivedToFinalPosition($robot->position(), $finalPosition)) {
-                break;
+        do {
+            $directionDetails = $this->pickUpDirection($robot);
+            if ($this->execute($robot, $directionDetails['face'])) {
+                $messages[] = $directionDetails['message'];
             }
 
-            if ($this->execute($robot, $robot->face())) {
-                $messages[] = 'move';
-                continue;
-            }
-
-            if ($this->execute($robot, $this->getLeftFace($robot->face()))) {
-                $messages[] = 'left move';
-                continue;
-            }
-
-            if ($this->execute($robot, $this->getRightFace($robot->face()))) {
-                $messages[] = 'right move';
-            }
-        }
+            $hasArrived = $this->hasArrivedToFinalPosition($robot->position(), $finalPosition);
+        } while (!$hasArrived);
 
         return implode(', ', $messages);
     }
@@ -234,5 +225,40 @@ final class RobotAction
         }
 
         return $newFace;
+    }
+
+    private function pickUpDirection(Robot $robot): array
+    {
+        $directionIndex = $this->getDirectionIndex();
+        switch (self::DIRECTIONS[$directionIndex]) {
+            case 'left':
+                $face = $this->getLeftFace($robot->face());
+                $message = 'move left';
+                break;
+
+            case 'right':
+                $face = $this->getRightFace($robot->face());
+                $message = 'move right';
+                break;
+
+            default:
+                $face = $robot->face();
+                $message = 'move';
+        }
+
+        return ['face' => $face, 'message' => $message];
+    }
+
+    private function getDirectionIndex(): int
+    {
+        static $rotateOrder = 0;
+
+        $rotateOrder++;
+
+        if ($rotateOrder > 2) {
+            $rotateOrder = 0;
+        }
+
+        return $rotateOrder;
     }
 }
