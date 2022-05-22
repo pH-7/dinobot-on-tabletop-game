@@ -98,7 +98,7 @@ final class RobotAction
         $finalPosition = new Vector($x, $y);
         $currentPosition = $this->robot->position();
         $currentFace = $this->robot->face();
-        $pathRobot = new Robot($currentPosition, $currentFace);
+        $robot = new Robot($currentPosition, $currentFace);
 
         if ($this->table->hasPotHole($finalPosition)) {
             throw new InvalidPositionException(
@@ -114,36 +114,32 @@ final class RobotAction
             );
         }
 
-        if ($this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition)) {
+        if ($this->hasArrivedToFinalPosition($robot->position(), $finalPosition)) {
             throw new InvalidPositionException(
                 'You are already on your final destination.',
                 InvalidPositionException::ALREADY_HERE
             );
         }
 
-        do {
-            $hasArrived = $this->hasArrivedToFinalPosition($pathRobot->position(), $finalPosition);
+        while (true) {
+            if ($this->hasArrivedToFinalPosition($robot->position(), $finalPosition)) {
+                break;
+            }
 
-            if ($this->execute($pathRobot, $pathRobot->face()) && !$hasArrived) {
+            if ($this->execute($robot, $robot->face())) {
                 $messages[] = 'move';
                 continue;
             }
 
-            if (!$hasArrived) {
-                $newFace = $this->getLeftFace($pathRobot->face());
-                if ($this->execute($pathRobot, $newFace)) {
-                    $messages[] = 'left move';
-                    continue;
-                }
+            if ($this->execute($robot, $this->getLeftFace($robot->face()))) {
+                $messages[] = 'left move';
+                continue;
             }
 
-            if (!$hasArrived) {
-                $newFace = $this->getRightFace($pathRobot->face());
-                if ($this->execute($pathRobot, $newFace)) {
-                    $messages[] = 'right move';
-                }
+            if ($this->execute($robot, $this->getRightFace($robot->face()))) {
+                $messages[] = 'right move';
             }
-        } while (!$hasArrived);
+        }
 
         return implode(', ', $messages);
     }

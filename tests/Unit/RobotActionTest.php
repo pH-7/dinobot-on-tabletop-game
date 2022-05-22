@@ -300,12 +300,12 @@ final class RobotActionTest extends TestCase
         return [
             // Facing East
             [
-                1,
+                3,
                 2,
                 2,
                 4,
                 RobotAction::EAST,
-                'move, move, move, left move, move, left move, move'
+                'move, left move, move, left move, move'
             ],
 
             // Facing West
