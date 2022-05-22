@@ -79,13 +79,13 @@ final class RobotAction
     public function left(): void
     {
         $currentFace = $this->robot->face();
-        $this->robot->update($this->robot->position(), $this->getFaceLeft($currentFace));
+        $this->robot->update($this->robot->position(), $this->getLeftFace($currentFace));
     }
 
     public function right(): void
     {
         $currentFace = $this->robot->face();
-        $this->robot->update($this->robot->position(), $this->getFaceRight($currentFace));
+        $this->robot->update($this->robot->position(), $this->getRightFace($currentFace));
     }
 
     /**
@@ -130,7 +130,7 @@ final class RobotAction
             }
 
             if (!$hasArrived) {
-                $newFace = $this->getFaceLeft($pathRobot->face());
+                $newFace = $this->getLeftFace($pathRobot->face());
                 $pathRobot->update($pathRobot->position(), $newFace);
                 if ($this->execute($pathRobot, $finalPosition)) {
                     $messages[] = 'left move';
@@ -186,7 +186,7 @@ final class RobotAction
         return $move;
     }
 
-    private function getFaceLeft(string $currentFace): string
+    private function getLeftFace(string $currentFace): string
     {
         $newFace = '';
         switch ($currentFace) {
@@ -207,7 +207,7 @@ final class RobotAction
         return $newFace;
     }
 
-    private function getFaceRight(string $currentFace): string
+    private function getRightFace(string $currentFace): string
     {
         $newFace = '';
         switch ($currentFace) {
