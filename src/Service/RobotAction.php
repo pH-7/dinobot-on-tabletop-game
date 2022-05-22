@@ -88,6 +88,10 @@ final class RobotAction
         $this->robot->update($this->robot->position(), $this->getFaceRight($currentFace));
     }
 
+    /**
+     *  Gives the path to take from the current position to a specific destination.
+     *  The pathfinder doesn't give the shortest path, but it does escape from potholes.
+     */
     public function path(int $x, int $y): string
     {
         $messages = [];
