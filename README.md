@@ -10,6 +10,8 @@ Available command:
   will move the toy robot one unit forward in the direction it is currently facing.
 - `left` or `right` \
   will rotate the robot 90 degrees in the specified direction without changing the position of the robot.
+- `path` \
+  will give the path to take from the current position to a specific destination. e.g. `path 0,1`
 - `q` \
   Exit the prompt.
 
