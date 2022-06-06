@@ -1,9 +1,12 @@
-# Toy Robot Simulator
+# Dinobot Robot Simulator
+
+![Dinobot - Draft](./dinobot-draft.jpeg)
 
 ## Usage
 
 Open a console and execute `php bin/toy`, a prompt character (`> `) will be shown.
 Available command:
+
 - `place x,y,face` \
   will put the toy robot on the table in position `x`, `y` and facing `north`, `south`, `east`, or `west`. This command should called first before another command. You cannot place a toy robot beyond the barrier.
 - `move` \
@@ -19,6 +22,7 @@ Example:\
 ![](./example.png)
 
 ## Development
+
 1. Fork and clone this repo.
 2. Install all dependencies
    ```
