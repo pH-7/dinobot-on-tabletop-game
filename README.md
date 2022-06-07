@@ -25,23 +25,23 @@ Example:\
 
 1. Fork and clone this repo.
 2. Install all dependencies
-   ```
+   ```console
    composer install
    ```
 3. Install development tools using `phive`
-   ```
+   ```console
    phive install
    ```
 4. Before commit the change, make sure there are no coding style or `phpstan` violations by executing
-   ```
+   ```console
    vendor/bin/phpcs
    tools/phpstan analyse
    ```
 5. Run unit testing by executing
-   ```
-   bin/phpunit
+   ```console
+   php bin/phpunit
    ```
 6. Unit testing coverage report
-   ```
-   bin/phpunit --coverage-text
+   ```console
+   php bin/phpunit --coverage-text
    ```
