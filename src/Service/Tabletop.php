@@ -31,7 +31,7 @@ final class Tabletop
 
     public function hasPotHole(Vector $pos): bool
     {
-        return in_array($pos->xpos(), self::POTHOLES_X) &&
-            in_array($pos->ypos(), self::POTHOLES_Y);
+        return in_array($pos->xpos(), self::POTHOLES_X, true) &&
+            in_array($pos->ypos(), self::POTHOLES_Y, true);
     }
 }
