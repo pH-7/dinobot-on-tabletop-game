@@ -1,6 +1,6 @@
 {
     "name": "asispts/toy-robot",
-    "description": "",
+    "description": "DinoBot Toy moves on the tabletop, is a simple and funny PHP console game.",
     "type": "project",
     "license": "MIT",
     "require": {
