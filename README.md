@@ -1,4 +1,4 @@
-# Dinobot Robot Simulator
+# Dinobot Robot Simulator 🦖
 
 ![Dinobot - Draft](./dinobot-draft.jpeg)
 
