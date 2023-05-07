@@ -146,7 +146,6 @@ final class RobotAction
         $newTmpPosition = $move->add($robot->position());
 
         $canGo = $this->isValid($newTmpPosition);
-
         if ($canGo) {
             $robot->update($newTmpPosition, $face);
         }
@@ -156,7 +155,7 @@ final class RobotAction
 
     private function isValid(Vector $position): bool
     {
-        return $this->table->isInside($position) && !$this->table->hasPotHole($position);
+        return $this->table->isInside($position) && $this->table->hasPotHole($position) === false;
     }
 
     private function hasArrivedToFinalPosition(Vector $current, Vector $destination): bool
