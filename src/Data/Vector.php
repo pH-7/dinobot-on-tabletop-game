@@ -4,10 +4,8 @@ namespace App\Data;
 
 final class Vector
 {
-
-    private $xpos;
-
-    private $ypos;
+    private int $xpos;
+    private int $ypos;
 
     public function __construct(int $xpos, int $ypos)
     {
