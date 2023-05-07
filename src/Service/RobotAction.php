@@ -19,12 +19,8 @@ final class RobotAction
 
     private const DIRECTIONS = ['left', 'right', 'move'];
 
-    /**
-     * @var Robot
-     */
-    private $robot;
-
-    private $table;
+    private Robot $robot;
+    private Tabletop $table;
 
     public function __construct(int $xpos, int $ypos, string $face)
     {
@@ -132,7 +128,7 @@ final class RobotAction
             $hasArrived = $this->hasArrivedToFinalPosition($robot->position(), $finalPosition);
         } while (!$hasArrived);
 
-        return implode(', ', $messages);
+        return implode(PHP_EOL, $messages);
     }
 
     /**
