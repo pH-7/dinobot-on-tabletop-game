@@ -24,6 +24,9 @@ Example:\
 ## Development
 
 1. Fork and clone this repo.
+```console
+git clone git@github.com:pH-7/dinobot-on-tabletop-game.git
+```
 2. Install all dependencies
    ```console
    composer install
